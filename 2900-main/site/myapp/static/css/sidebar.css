@@ -1,0 +1,193 @@
+/* 
+ * Sidebar Stylesheet
+ * Contains styling for the watchlist sidebar
+ * Including toggle button, watchlist items, and responsive design
+ */
+
+/* Sidebar Toggle Button */
+.sidebar-toggle-button {
+    display: none; /* Hidden by default, shown only for authenticated users */
+    background: #010101;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-right: 1em;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: #318090;
+    transition: all 0.3s ease;
+}
+
+/* Only show the toggle button when user is authenticated */
+.user-authenticated .sidebar-toggle-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-toggle-button:hover {
+    background: #ff4444;
+    color: white;
+}
+
+.sidebar-toggle-button::before {
+    content: "☰";
+    font-weight: bold;
+}
+
+/* Sidebar Container */
+.sidebar {
+    position: fixed;
+    top: 70px; /* Aligned with header height */
+    right: 0;
+    width: 300px;
+    height: calc(100vh - 70px);
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(10px);
+    color: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+    z-index: 999;
+}
+
+/* Sidebar Visibility States */
+.sidebar.hidden {
+    transform: translateX(100%);
+}
+
+.sidebar:not(.hidden) {
+    transform: translateX(0);
+}
+
+/* Sidebar headings */
+.sidebar h2 {
+    color: #ffffff;
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #ff4444;
+}
+
+/* Watchlist Items Container */
+.watchlist-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Individual Watchlist Item */
+.watchlist-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.watchlist-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-5px);
+}
+
+/* Watchlist Item Content Layout */
+.watchlist-item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+}
+
+.watchlist-item-info {
+    flex: 1;
+}
+
+.watchlist-title {
+    color: white;
+    font-weight: 500;
+    margin-right: 0.5rem;
+}
+
+.watchlist-item .media-type {
+    color: #ff4444;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Remove Button Styling */
+.remove-button {
+    background: transparent;
+    color: #ff4444;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.remove-button:hover {
+    background: #ff4444;
+    color: white;
+    transform: rotate(90deg);
+}
+
+/* Empty State Messages */
+.empty-watchlist {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #999;
+}
+
+.empty-watchlist p {
+    font-style: italic;
+    margin: 0;
+}
+
+/* Login Prompt Styling */
+.login-prompt {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.login-prompt p {
+    color: #999;
+}
+
+.login-prompt .login-link {
+    color: #ff4444;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.login-prompt .login-link:hover {
+    color: #ff6666;
+}
+
+/* Custom Scrollbar Styling */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #ff4444;
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #ff6666;
+}

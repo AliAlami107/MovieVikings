@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Popular Content
+    {% if selected_provider_ids %} (Filtered) {% endif %}
+    {% if selected_region %} in {{ selected_region }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Popular Content Template
+     Displays a grid of popular movies and TV shows:
+     - Content is sorted by popularity
+     - Each item shows poster, title, and basic info
+     - Includes pagination for browsing more content
+-->
+<main class="main-content popular-page">
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% else %}
+    {# --- FILTER FORM SECTION --- #}
+    <section class="filter-controls">
+        <form method="GET" action="{% url 'popular' %}" class="filter-form">
+
+            {# Hidden input for region fallback #}
+            <input type="hidden" name="region" value="{{ selected_region }}">
+
+            {# --- Provider Filter Checkboxes --- #}
+            <div class="filter-group provider-filter-group">
+              <label>Providers:</label> {# General label for the group #}
+              <div class="provider-logo-grid"> {# Container for scrolling/styling #}
+                {% for provider in all_providers %}
+                <label class="provider-logo-label {% if provider.tmdb_id in selected_provider_ids %}is-selected{% endif %}"
+                       for="provider-{{ provider.tmdb_id }}"
+                       title="{{ provider.name }}">
+            
+                    <input class="hidden-checkbox"
+                           type="checkbox"
+                           name="provider"
+                           value="{{ provider.tmdb_id }}"
+                           id="provider-{{ provider.tmdb_id }}"
+                           {% if provider.tmdb_id in selected_provider_ids %}checked{% endif %}
+                    >
+            
+                    {# --- Use the logo_url directly from context --- #}
+                    {% if provider.logo_url %}
+                        <img src="{{ provider.logo_url }}" {# Assumes this is the full URL #}
+                             alt="{{ provider.name }}"
+                             class="provider-logo-filter">
+                    {% else %}
+                        <span class="provider-logo-fallback">{{ provider.name|slice:":10" }}</span>
+                    {% endif %}
+                    {# --- End --- #}
+                </label>
+            {% empty %}
+                <span class="no-providers-message">No providers found for {{ selected_region }}.</span>
+            {% endfor %}
+              </div>
+          </div>
+          
+          {# --- Buttons --- #}
+          <div class="filter-group filter-buttons">
+              <button type="submit" class="button-apply">Apply Filters</button>
+              <a href="{% url 'popular' %}?region={{ selected_region }}" class="button-clear">Clear Provider Filters</a>
+          </div>
+
+        </form>
+    </section> {# End of filter-controls #}
+        {# --- CONTENT SECTION --- #}
+        <section class="content-section">
+            <h1>
+                Popular Content
+                {% if selected_provider_ids %} (Provider Filter Active) {% endif %}
+                 in {{ selected_region }}
+            </h1>
+
+            <div class="content-grid"> {# Your existing grid class #}
+                {% for item in page_obj %}
+                    {# --- USE THE INCLUDE TAG HERE --- #}
+                    {% include 'includes/movie_card.html' with item=item watchlist_ids=watchlist_ids selected_region=selected_region %}
+                {% empty %}
+                   <p class="no-results">No content found matching your criteria.</p>
+                {% endfor %}
+            </div> {# End of content-grid #}
+
+            {# --- PAGINATION CONTROLS --- #}
+            {% include 'includes/pagination.html' with page_obj=page_obj query_params=current_filters_encoded %}
+
+        </section> {# End of content-section #}
+    {% endif %} {# End of no error check #}
+</main>
+{% endblock %}
+
+{# Load filter-specific CSS #}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/filters.css' %}">
+    {# ADD link to your movie card CSS if it's separate and not in main style.css #}
+    {# <link rel="stylesheet" href="{% static 'css/movie_card.css' %}"> #}
+{% endblock %}

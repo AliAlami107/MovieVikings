@@ -1,0 +1,185 @@
+{% load static %}
+{% load compress %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Our Project{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon Configuration
+         Includes various favicon sizes and formats for different devices:
+         - Apple Touch Icon (180x180)
+         - Standard Favicon (32x32, 16x16)
+         - Web Manifest for PWA support
+    -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicons/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicons/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicons/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicons/site.webmanifest' %}">
+    <link rel="shortcut icon" href="{% static 'favicons/favicon-16x16.png' %}" type="image/png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    
+    <!-- Critical Asset Preloading
+         Preloads essential CSS files for optimal performance:
+         - style.css: Main application styles
+         - sidebar.css: Sidebar component styles
+    -->
+    <link rel="preload" href="{% static 'css/style.css' %}" as="style">
+    <link rel="preload" href="{% static 'css/sidebar.css' %}" as="style">
+    
+    <!-- Font Configuration
+         Loads Google Fonts for consistent typography:
+         - Inter: Primary font for UI elements
+         - Poppins: Secondary font for headings
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Compression
+         Compresses and bundles CSS files for better performance
+         Includes main styles and allows for template-specific CSS
+    -->
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    {% block extra_css %}{% endblock %}
+    {% endcompress %}
+</head>
+
+<!-- Toggle Edit Form Function
+     JavaScript function to show/hide edit forms for media items
+     Used in various templates for inline editing
+-->
+<script>
+function toggleEditForm(mediaId) {
+    const form = document.getElementById(`edit-form-${mediaId}`);
+    if (form) {
+        form.classList.toggle("hidden");
+    }
+}
+</script>
+
+<body class="{% if user.is_authenticated %}user-authenticated{% endif %}">
+    <!-- Main Navigation Header
+         Contains:
+         - Logo and site name
+         - Main navigation links
+         - User authentication controls
+         - Region selection
+    -->
+    <header class="top-bar">
+        <div class="header-left">
+            <a href="{% url 'index' %}" class="logo">
+                <img src="{% static 'images/new_logo_header.png' %}" alt="Logo" class="logo-image">
+                <span class="text-logo">MovieVikings</span>
+            </a>
+        </div>
+        <nav class="header-nav">
+            <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a>
+            <a href="/popular" class="nav-link {% if request.path == '/popular' %}active{% endif %}">Popular</a>
+            <a href="/trending" class="nav-link {% if request.path == '/trending' %}active{% endif %}">Trending</a>
+            <a href="/randomizer" class="nav-link {% if request.path == '/randomizer' %}active{% endif %}">Randomizer</a>
+        </nav>
+        <div class="header-right">
+            <a href="{% url 'settings' %}" class="settings-icon">
+                <img src="{% static 'images/settings.png' %}" alt="Settings">
+            </a>
+
+            <!-- Region Selection
+                 Allows users to change their region for content availability
+                 Affects streaming provider information and content recommendations
+            -->
+            <select id="region-select" class="region-select">
+                <option value="NO" {% if selected_region == 'NO' %}selected{% endif %}>NO Norway</option>
+                <option value="US" {% if selected_region == 'US' %}selected{% endif %}>US United States</option>
+                <option value="GB" {% if selected_region == 'GB' %}selected{% endif %}>GB United Kingdom</option>
+                <option value="DE" {% if selected_region == 'DE' %}selected{% endif %}>DE Germany</option>
+                <option value="FR" {% if selected_region == 'FR' %}selected{% endif %}>FR France</option>
+                <option value="SE" {% if selected_region == 'SE' %}selected{% endif %}>SWE Sweden</option>
+                <option value="DK" {% if selected_region == 'DK' %}selected{% endif %}>DK Denmark</option>
+            </select>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="login-button">My Profile</a>
+                <button type="button" class="sidebar-toggle-button" onclick="toggleSidebar()"></button>
+            {% else %}
+                <a href="{% url 'login' %}" class="login-button">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- User Watchlist Sidebar
+         Only visible to authenticated users
+         Displays user's saved content with quick access to:
+         - Content details
+         - Remove from watchlist functionality
+    -->
+    {% if user.is_authenticated %}
+    <aside id="sidebar" class="sidebar hidden">
+        <h2>My Watchlist</h2>
+        {% if watchlist_items %}
+            <ul class="watchlist-items">
+                {% for item in watchlist_items %}
+                    <li class="watchlist-item" 
+                        data-media-id="{{ item.media_id }}"
+                        data-media-type="{{ item.media_type }}">
+                        <div class="watchlist-item-content">
+                            <div class="watchlist-item-info">
+                                <a href="{% url 'content_detail' media_type=item.media_type media_id=item.media_id %}">
+                                    <span class="watchlist-title">{{ item.title }}</span>
+                                </a>
+                                <span class="media-type">({{ item.media_type }})</span>
+                            </div>
+                            <form action="{% url 'remove_from_watchlist' item.media_type item.media_id %}" 
+                                  method="post" 
+                                  class="remove-form">
+                                {% csrf_token %}
+                                <button type="submit" class="remove-button">&times;</button>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-watchlist">
+                <p>Your watchlist is empty</p>
+            </div>
+        {% endif %}
+    </aside>
+    {% endif %}
+
+    <!-- Main Content Area
+         Template-specific content will be rendered here
+         Each template extends this base and fills this block
+    -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer Navigation
+         Contains links to important pages:
+         - Contact information
+         - About page
+         - Privacy policy
+    -->
+    <footer class="bottom-bar">
+        <button onclick="window.location.href='/contact'">Contact</button>
+        <button onclick="window.location.href='/about'">About</button>
+        <button onclick="window.location.href='/privacy'">Privacy</button>
+    </footer>
+
+    <!-- JavaScript Compression
+         Compresses and bundles JavaScript files for better performance
+         Includes main scripts and allows for template-specific JS
+    -->
+    {% compress js %}
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    {% endcompress %}
+</body>
+</html>

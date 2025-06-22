@@ -1,0 +1,61 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.2 Chrome/134.0.6998.178 Electron/35.1.2 Safari/537.36" version="26.2.2">
+  <diagram name="Page-1" id="fbcf5db9-b524-4cd4-e4f3-379dc89c3999">
+    <mxGraphModel dx="514" dy="618" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2a0f93b5c73ef8e7-1" value="" style="line;strokeWidth=10;direction=south;html=1;fillColor=none;fontSize=13;fontColor=#000000;align=center;strokeColor=#AE4132;" parent="1" vertex="1">
+          <mxGeometry x="360" y="70" width="10" height="990" as="geometry" />
+        </mxCell>
+        <mxCell id="2a0f93b5c73ef8e7-2" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#F2931E;fontSize=13;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=top;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="170" y="135" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="2a0f93b5c73ef8e7-4" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#10739E;fontSize=13;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=top;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="250" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="2a0f93b5c73ef8e7-6" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#F2931E;fontSize=13;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=top;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="170" y="360" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="2a0f93b5c73ef8e7-8" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#10739E;fontSize=13;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=top;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="475" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="2a0f93b5c73ef8e7-10" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#F2931E;fontSize=13;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=top;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="170" y="590" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="2a0f93b5c73ef8e7-12" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#10739E;fontSize=13;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=top;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="705" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="2a0f93b5c73ef8e7-14" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#F2931E;fontSize=13;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=top;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="170" y="830" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="2a0f93b5c73ef8e7-16" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#10739E;fontSize=13;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=top;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="945" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="oxwxAYZujT_x5pB5a09z-2" value="&lt;b&gt;Sprint 1&amp;nbsp;&lt;/b&gt;&lt;div&gt;&lt;b&gt;Lasted: 6th to 13th of february&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Scrum master: X1&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="135" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="oxwxAYZujT_x5pB5a09z-4" value="&lt;b&gt;Sprint 6&lt;/b&gt;&lt;div&gt;&lt;b&gt;Lasted: 3th to 17th of april&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Scrum master: X1&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="345" y="702.5" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="oxwxAYZujT_x5pB5a09z-5" value="&lt;b&gt;Sprint 5&lt;/b&gt;&lt;div&gt;&lt;b&gt;Lasted: 20th to 3th of april&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Scrum master: X4&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="585" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="oxwxAYZujT_x5pB5a09z-6" value="&lt;b&gt;Sprint 4&amp;nbsp;&lt;/b&gt;&lt;div&gt;&lt;b&gt;Lasted: 6th to 20th of march&amp;nbsp;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Scrum master: X3&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="345" y="472.5" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="oxwxAYZujT_x5pB5a09z-7" value="&lt;b&gt;Sprint 3&amp;nbsp;&lt;/b&gt;&lt;div&gt;&lt;b&gt;Lasted: 20th to 6th of february&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Scrum master: X2&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="355" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="oxwxAYZujT_x5pB5a09z-8" value="&lt;b&gt;Sprint 2&amp;nbsp;&lt;/b&gt;&lt;div&gt;&lt;b&gt;Lasted: 13th to 20th of february&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Scrum master: X1&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="345" y="247.5" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="oxwxAYZujT_x5pB5a09z-9" value="&lt;b&gt;Sprint 8&lt;/b&gt;&lt;div&gt;&lt;b&gt;Lasted: 1th to 15th of may&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Scrum master: X3&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="345" y="940" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="oxwxAYZujT_x5pB5a09z-10" value="&lt;b&gt;Sprint 7&lt;/b&gt;&lt;div&gt;&lt;b&gt;Lasted: 17th to 1th of may&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Scrum master: X2&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="827.5" width="210" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

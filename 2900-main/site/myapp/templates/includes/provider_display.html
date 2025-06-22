@@ -1,0 +1,44 @@
+{# templates/includes/provider_display.html #}
+{% load static %}
+
+{% if providers.flatrate %}
+<div class="streaming-section">
+    <h3 class="streaming-section-title">Stream:</h3>
+    <div class="provider-list">
+        {% for provider in providers.flatrate %}
+        <div class="provider" title="{{ provider.provider_name }}">
+             {% if provider.logo_path %}
+                 <img src="{{ provider.logo_path }}" alt="{{ provider.provider_name }}" class="provider-logo" loading="lazy">
+             {% else %}
+                 <span class="provider-name-text">{{ provider.provider_name }}</span>
+             {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if providers.rent %}
+<div class="streaming-section">
+     <h3 class="streaming-section-title">Rent:</h3>
+    <div class="provider-list">
+        {% for provider in providers.rent %}
+        <div class="provider" title="{{ provider.provider_name }}">
+             {% if provider.logo_path %}
+                 <img src="{{ provider.logo_path }}" alt="{{ provider.provider_name }}" class="provider-logo" loading="lazy">
+             {% else %}
+                  <span class="provider-name-text">{{ provider.provider_name }}</span>
+             {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{# Add similar section for 'buy' if you process it in the view #}
+
+{% if not providers.available %}
+    <div class="no-streaming-info">
+        <p>No streaming/renting info found for {{ region }}.</p>
+    </div>
+{% endif %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load compress %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/friends.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="info-container">
+        <h1>Settings</h1>
+        <div class="privacy-content">
+            <section class="privacy-section">
+                <h2>Account Settings</h2>
+                <div class="account-actions">
+                    <a href="{% url 'change_password' %}" class="settings-button">Update Password</a>
+                    <a href="{% url 'delete_account' %}" class="settings-button danger">Delete Account</a>
+                </div>
+            </section>
+
+            
+        </div>
+
+    </div>
+</main>
+{% endblock %} 

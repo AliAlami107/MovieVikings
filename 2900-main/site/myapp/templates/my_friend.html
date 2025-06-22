@@ -1,0 +1,1141 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile Dashboard{% endblock %}
+
+{% block content %}
+<!-- Friend Profile Template
+     Displays another user's profile information:
+     - Basic user information
+     - Achievement progress
+     - Watch statistics
+     - Watched content history
+     Note: This is a read-only view of another user's profile
+-->
+<main class="main-content">
+    <div class="dashboard-container">
+        <!-- Friend Information Section
+             Displays basic information about the friend:
+             - Username
+             - Account creation date
+             - Avatar placeholder
+        -->
+        <section class="dashboard-section user-info">
+            <div class="user-header">
+                <div class="user-avatar">
+                    <!-- Avatar Display
+                         Uses first letter of username as placeholder
+                         Consistent with main profile implementation
+                    -->
+                    <div class="avatar-placeholder">{{ user.username|make_list|first|upper }}</div>
+                </div>
+                <div class="user-details">
+                    <h1>{{ friend.username }}</h1>
+                    <p class="member-since">Member since: {{ friend.date_joined|date:"F j, Y" }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Friend's Achievement Display
+             Shows the friend's:
+             - Total badges earned
+             - Recently earned badges
+             - Progress towards next badges
+             - Badge categories (Movies, TV, Reviews, Watch Time)
+        -->
+        <section class="dashboard-section achievements">
+            <h2>{{ friend.username }}'s Achievements</h2>
+            <div class="badge-summary">
+                <div class="badge-count">
+                    <span class="count-number">{{ badge_count }}</span>
+                    <span class="count-label">Badges Earned</span>
+                </div>
+                
+                <!-- Recent Badges Display
+                     Shows friend's most recently earned badges
+                     with their icons and descriptions
+                -->
+                <div class="recent-badges">
+                    {% if recent_badges %}
+                        <h3>Recently Earned</h3>
+                        <div class="badges-row">
+                            {% for user_badge in recent_badges %}
+                                <div class="badge-item badge-{{ user_badge.badge.rarity }}">
+                                    <div class="badge-icon">{{ user_badge.badge.icon }}</div>
+                                    <div class="badge-info">
+                                        <div class="badge-name">{{ user_badge.badge.name }}</div>
+                                        <div class="badge-desc">{{ user_badge.badge.description }}</div>
+                                        <div class="badge-date">Earned {{ user_badge.earned_date|date:"M d, Y" }}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-badges">
+                            <p>{{ friend.username }} hasn't earned any badges yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Badge Progress Display
+                 Shows friend's progress towards next badges:
+                 - Movie watching progress
+                 - TV show watching progress
+                 - Review writing progress
+                 - Total watch time progress
+            -->
+            <div class="badge-progress">
+                <h3>Progress to Next Badges</h3>
+                <div class="progress-grid">
+                    {% if next_movie_badge %}
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <div class="progress-icon">🎬</div>
+                            <div class="progress-title">{{ next_movie_badge.name }}</div>
+                        </div>
+                        <div class="progress-desc">{{ next_movie_badge.description }}</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="{{ movie_badge_progress }}"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span class="progress-current">{{ watched_movie_count }}</span>
+                            <span class="progress-separator">/</span>
+                            <span class="progress-target">{{ next_movie_badge.requirement_count }}</span>
+                            <span class="progress-type">movies</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if next_tv_badge %}
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <div class="progress-icon">📺</div>
+                            <div class="progress-title">{{ next_tv_badge.name }}</div>
+                        </div>
+                        <div class="progress-desc">{{ next_tv_badge.description }}</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="{{ tv_badge_progress }}"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span class="progress-current">{{ watched_tv_count }}</span>
+                            <span class="progress-separator">/</span>
+                            <span class="progress-target">{{ next_tv_badge.requirement_count }}</span>
+                            <span class="progress-type">TV shows</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if next_review_badge %}
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <div class="progress-icon">✍️</div>
+                            <div class="progress-title">{{ next_review_badge.name }}</div>
+                        </div>
+                        <div class="progress-desc">{{ next_review_badge.description }}</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="{{ review_badge_progress }}"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span class="progress-current">{{ reviews_written }}</span>
+                            <span class="progress-separator">/</span>
+                            <span class="progress-target">{{ next_review_badge.requirement_count }}</span>
+                            <span class="progress-type">reviews</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if next_watch_time_badge %}
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <div class="progress-icon">⏱️</div>
+                            <div class="progress-title">{{ next_watch_time_badge.name }}</div>
+                        </div>
+                        <div class="progress-desc">{{ next_watch_time_badge.description }}</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="{{ watch_time_progress }}"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span class="progress-current">{{ total_watch_hours }}</span>
+                            <span class="progress-separator">/</span>
+                            <span class="progress-target">{{ next_watch_time_badge.requirement_count }}</span>
+                            <span class="progress-type">hours</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- All Badges View
+                 Toggleable section showing all badges earned by friend
+                 with their details and earning dates
+            -->
+            <div class="view-all-badges">
+                <button class="badge-toggle" id="toggle-badges">View All {{ friend.username }}'s Badges</button>
+                <div class="all-badges-container" id="all-badges" style="display: none;">
+                    <div class="all-badges-grid">
+                        {% for user_badge in user_badges %}
+                            <div class="badge-item badge-{{ user_badge.badge.rarity }}">
+                                <div class="badge-icon">{{ user_badge.badge.icon }}</div>
+                                <div class="badge-info">
+                                    <div class="badge-name">{{ user_badge.badge.name }}</div>
+                                    <div class="badge-desc">{{ user_badge.badge.description }}</div>
+                                    <div class="badge-date">Earned {{ user_badge.earned_date|date:"M d, Y" }}</div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No badges earned yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Friend's Watch Statistics
+             Displays friend's viewing statistics:
+             - Total content watched
+             - Breakdown by type (Movies/TV)
+             - Total watch time
+        -->
+        <section class="dashboard-section watch-counter">
+            <h2>Your Watch Stats</h2>
+            <div class="counter-container">
+                <div class="counter-item">
+                    <div class="counter-circle">
+                        <span class="counter-number">{{ watched_count }}</span>
+                    </div>
+                    <div class="counter-label">Total Watched</div>
+                </div>
+                <div class="counter-details">
+                    <div class="counter-detail">
+                        <div class="detail-icon movie-icon">🎬</div>
+                        <div class="detail-stats">
+                            <span class="detail-number">{{ watched_movie_count }}</span>
+                            <span class="detail-label">Movies</span>
+                        </div>
+                    </div>
+                    <div class="counter-detail">
+                        <div class="detail-icon tv-icon">📺</div>
+                        <div class="detail-stats">
+                            <span class="detail-number">{{ watched_tv_count }}</span>
+                            <span class="detail-label">TV Shows</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Watch Time Display
+                 Shows friend's total watch time
+                 broken down into hours and minutes
+            -->
+            <div class="watch-time-container">
+                <h3>Total Watch Time</h3>
+                <div class="watch-time-display">
+                    <div class="time-icon">⏱️</div>
+                    <div class="time-value">
+                        <span class="time-number">{{ total_watch_hours }}</span>
+                        <span class="time-unit">hours</span>
+                        {% if remaining_minutes > 0 %}
+                        <span class="time-number">{{ remaining_minutes }}</span>
+                        <span class="time-unit">minutes</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Friend's Watched Content
+             Displays a grid of content watched by friend:
+             - Movie and TV show posters
+             - Titles and types
+             - Ratings and review dates
+        -->
+        <section class="dashboard-section content-tabs">
+            <h2>{{ friend.username }}'s Watched Content</h2>
+        
+            <div class="tab-content">
+                {% if recent_watched %}
+                    <div class="media-grid">
+                        {% for item in recent_watched %}
+                            <div class="media-card">
+                                <div class="media-poster">
+                                    {% if item.poster_path %}
+                                        <img src="https://image.tmdb.org/t/p/w500{{ item.poster_path }}" alt="{{ item.title }}">
+                                    {% else %}
+                                        <div class="no-poster">
+                                            <span>No Image</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="media-details">
+                                    <h3>{{ item.title }}</h3>
+                                    <div class="media-meta">
+                                        {% if item.media_type == 'movie' %}
+                                            <span class="media-type movie">Movie</span>
+                                        {% else %}
+                                            <span class="media-type tv">TV Show</span>
+                                        {% endif %}
+                                        
+                                        {% if item.rating %}
+                                            <span class="media-rating">
+                                                {% for i in "12345" %}
+                                                    {% if forloop.counter <= item.rating|add:"0" %}
+                                                        <span class="star filled">★</span>
+                                                    {% else %}
+                                                        <span class="star">☆</span>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+        
+                                    {% if item.rating and item.rated_date %}
+                                        <p style="font-size: 0.85rem; color: #888;">Rated on {{ item.rated_date|date:"F j, Y" }}</p>
+                                    {% endif %}
+
+                                    {% if item.review %}
+                                        <p style="margin-top: 0.5rem; font-style: italic; color: #ccc;">"{{ item.review }}"</p>
+                                    {% endif %}
+
+                                    <div class="media-actions">
+                                        <a href="{% url 'content_detail' item.media_type item.media_id %}" class="view-btn">Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-content">{{ friend.username }} hasn't watched anything yet.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .dashboard-section {
+        background: rgba(20, 20, 20, 0.95);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .user-header {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .avatar-placeholder {
+        width: 100px;
+        height: 100px;
+        background: #ff4444;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        font-weight: bold;
+    }
+
+    .user-details h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        color: white;
+    }
+
+    .user-email {
+        color: #ccc;
+        margin: 0.5rem 0;
+    }
+
+    .member-since {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    /* Watch Counter Section */
+    .watch-counter {
+        text-align: center;
+    }
+
+    .watch-counter h2 {
+        color: #ff4444;
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    .counter-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 3rem;
+    }
+
+    .counter-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .counter-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff4444, #ff9e3f);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 20px rgba(255, 68, 68, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .counter-circle::before {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        background: rgba(20, 20, 20, 0.8);
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .counter-number {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: white;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .counter-label {
+        font-size: 1.2rem;
+        color: #ff4444;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .counter-details {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .counter-detail {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        width: 220px;
+    }
+
+    .detail-icon {
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .movie-icon {
+        color: #3498db;
+    }
+
+    .tv-icon {
+        color: #2ecc71;
+    }
+
+    .detail-stats {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+    }
+
+    .detail-label {
+        font-size: 0.9rem;
+        color: #999;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .stat-card h3 {
+        color: #ccc;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .stat-number {
+        color: #ff4444;
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0.5rem 0 0;
+    }
+
+    /* Tab styles */
+    .tabs-header {
+        display: flex;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.5rem;
+    }
+
+    .tab-link {
+        padding: 1rem 2rem;
+        text-decoration: none;
+        color: #ccc;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .tab-link.active {
+        color: #ff4444;
+        border-bottom: 3px solid #ff4444;
+    }
+
+    .tab-link:hover {
+        color: #ff4444;
+        text-decoration: none;
+    }
+
+    .tab-link h2 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    /* Media grid */
+    .media-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .media-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .media-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .media-poster {
+        height: 300px;
+        overflow: hidden;
+    }
+
+    .media-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .no-poster {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #333;
+        color: #ccc;
+    }
+
+    .media-details {
+        padding: 1rem;
+    }
+
+    .media-details h3 {
+        margin: 0 0 0.5rem;
+        color: white;
+        font-size: 1.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .media-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .media-type {
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.8rem;
+    }
+
+    .media-type.movie {
+        background: rgba(52, 152, 219, 0.2);
+        color: #3498db;
+    }
+
+    .media-type.tv {
+        background: rgba(46, 204, 113, 0.2);
+        color: #2ecc71;
+    }
+
+    .media-rating {
+        color: #f39c12;
+    }
+
+    .star {
+        color: #555;
+    }
+
+    .star.filled {
+        color: #f39c12;
+    }
+
+    .media-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .view-btn, .watched-btn, .rate-btn, .remove-btn {
+        padding: 0.5rem;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .view-btn {
+        background: #3498db;
+        color: white;
+    }
+
+    .watched-btn {
+        background: #2ecc71;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .rate-btn {
+        background: #f39c12;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .remove-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .view-btn:hover, .watched-btn:hover, .rate-btn:hover, .remove-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* Rating form */
+    .rating-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+    }
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        cursor: pointer;
+        width: 20px;
+        font-size: 1.5rem;
+        color: #555;
+        transition: all 0.2s ease;
+    }
+
+    .star-rating label:before {
+        content: '☆';
+    }
+
+    .star-rating input:checked ~ label:before,
+    .star-rating label:hover:before,
+    .star-rating label:hover ~ label:before {
+        content: '★';
+        color: #f39c12;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .page-link {
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        color: #ccc;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .page-link.current {
+        background: #ff4444;
+        color: white;
+    }
+
+    .page-link:hover:not(.current) {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        text-decoration: none;
+    }
+
+    .no-content {
+        text-align: center;
+        color: #888;
+        font-style: italic;
+        padding: 2rem 0;
+    }
+
+    .inline-form {
+        display: inline;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+
+        .user-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .counter-container {
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .tabs-header {
+            flex-direction: column;
+        }
+
+        .media-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Watch Time Display */
+    .watch-time-container {
+        margin-top: 2.5rem;
+        text-align: center;
+    }
+
+    .watch-time-container h3 {
+        color: #ff4444;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .watch-time-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 1.5rem;
+        max-width: 400px;
+        margin: 0 auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .time-icon {
+        font-size: 2.5rem;
+        margin-right: 1.5rem;
+    }
+
+    .time-value {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .time-number {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #ff9e3f;
+    }
+
+    .time-unit {
+        font-size: 1.2rem;
+        color: #ccc;
+        margin-right: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+        .watch-time-display {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .time-icon {
+            margin-right: 0;
+        }
+    }
+
+    /* Achievement and Badge Styles */
+    .achievements h2 {
+        color: #ff4444;
+        font-size: 1.8rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .badge-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .badge-count {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        min-width: 180px;
+        background: linear-gradient(135deg, #ff4444, #ff9e3f);
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(255, 68, 68, 0.2);
+    }
+    
+    .count-number {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .count-label {
+        font-size: 1.1rem;
+        color: white;
+        margin-top: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+    
+    .recent-badges {
+        flex: 1;
+    }
+    
+    .recent-badges h3 {
+        font-size: 1.3rem;
+        color: #ccc;
+        margin-bottom: 1rem;
+    }
+    
+    .badges-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .badge-item {
+        display: flex;
+        background: rgba(40, 40, 40, 0.7);
+        padding: 1rem;
+        border-radius: 10px;
+        border-left: 4px solid;
+        max-width: 300px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .badge-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .badge-bronze {
+        border-color: #cd7f32;
+    }
+    
+    .badge-silver {
+        border-color: #c0c0c0;
+    }
+    
+    .badge-gold {
+        border-color: #ffd700;
+    }
+    
+    .badge-platinum {
+        border-color: #e5e4e2;
+    }
+    
+    .badge-icon {
+        font-size: 2.5rem;
+        margin-right: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+    
+    .badge-info {
+        flex: 1;
+    }
+    
+    .badge-name {
+        font-weight: 600;
+        color: white;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .badge-desc {
+        color: #aaa;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .badge-date {
+        color: #777;
+        font-size: 0.8rem;
+        font-style: italic;
+    }
+    
+    .no-badges {
+        padding: 1rem;
+        background: rgba(40, 40, 40, 0.7);
+        border-radius: 10px;
+        color: #999;
+        font-style: italic;
+    }
+    
+    /* Badge Progress Styles */
+    .badge-progress {
+        margin-top: 2rem;
+    }
+    
+    .badge-progress h3 {
+        font-size: 1.3rem;
+        color: #ccc;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .progress-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .progress-card {
+        background: rgba(40, 40, 40, 0.7);
+        padding: 1.5rem;
+        border-radius: 10px;
+        transition: transform 0.2s ease;
+    }
+    
+    .progress-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .progress-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .progress-icon {
+        font-size: 1.8rem;
+        margin-right: 1rem;
+    }
+    
+    .progress-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: white;
+    }
+    
+    .progress-desc {
+        color: #aaa;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 0.8rem;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, #ff4444, #ff9e3f);
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
+    
+    .progress-stats {
+        display: flex;
+        align-items: baseline;
+        color: #ccc;
+    }
+    
+    .progress-current {
+        color: #ff4444;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+    
+    .progress-separator, .progress-target {
+        margin: 0 0.3rem;
+    }
+    
+    .progress-type {
+        color: #888;
+        margin-left: 0.3rem;
+    }
+    
+    /* View All Badges Section */
+    .view-all-badges {
+        margin-top: 2rem;
+        text-align: center;
+    }
+    
+    .badge-toggle {
+        background: rgba(255, 68, 68, 0.8);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 30px;
+        font-family: var(--font-secondary, sans-serif);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .badge-toggle:hover {
+        background: #ff4444;
+        transform: translateY(-2px);
+    }
+    
+    .all-badges-container {
+        margin-top: 1.5rem;
+    }
+    
+    .all-badges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .badge-summary {
+            flex-direction: column;
+        }
+        
+        .badge-count {
+            width: 100%;
+        }
+        
+        .progress-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .all-badges-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle "View All Badges" section
+        const toggleButton = document.getElementById('toggle-badges');
+        const allBadgesSection = document.getElementById('all-badges');
+        
+        if (toggleButton && allBadgesSection) {
+            toggleButton.addEventListener('click', function() {
+                const isHidden = allBadgesSection.style.display === 'none';
+                allBadgesSection.style.display = isHidden ? 'block' : 'none';
+                toggleButton.textContent = isHidden ? 'Hide All Badges' : 'View All {{ friend.username }}\'s Badges';
+            });
+        }
+        
+        // Set progress bar widths from data attributes
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(function(bar) {
+            const width = bar.getAttribute('data-width');
+            if (width) {
+                bar.style.width = width + '%';
+            }
+        });
+    });
+</script>
+{% endblock %} 

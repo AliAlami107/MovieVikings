@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found | MovieVikings{% endblock %}
+
+{% block content %}
+<div class="error-page-container">
+    <div class="error-content">
+        <div class="error-code-banner">
+            <span class="error-code">404</span>
+        </div>
+        
+        <h1 class="error-title">Scene Not Found</h1>
+        
+        <p class="error-message">The content you're looking for seems to have been lost in the editing room. Our movie scouts couldn't find this page in our archives.</p>
+        
+        <div class="suggestions">
+            <h3>Director's Suggestions:</h3>
+            <div class="suggestion-buttons">
+                <a href="javascript:void(0)" onclick="checkURL()" class="suggestion-btn">Check if the URL is correct</a>
+                <a href="{% url 'index' %}" class="suggestion-btn">Return to our main screening hall</a>
+                <a href="{% url 'popular' %}" class="suggestion-btn">Explore our featured selections</a>
+                <a href="{% url 'randomizer' %}" class="suggestion-btn">Try our content randomizer for a surprise</a>
+            </div>
+        </div>
+        
+        <div class="error-actions">
+            <a href="{% url 'index' %}" class="action-button primary">Home</a>
+            <a href="{% url 'popular' %}" class="action-button">Popular</a>
+            <a href="{% url 'randomizer' %}" class="action-button">Randomizer</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkURL() {
+        alert("Please check that you've entered the correct URL and try again.");
+    }
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-page-container {
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1rem;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .error-content {
+        width: 100%;
+        max-width: 800px;
+        background: rgba(25, 25, 25, 0.95);
+        padding: 2.5rem 2rem;
+        border-radius: 15px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+        border-top: 5px solid #ff4444;
+        text-align: center;
+    }
+    
+    .error-code-banner {
+        margin-bottom: 1.5rem;
+    }
+    
+    .error-code {
+        font-size: 7rem;
+        font-weight: 900;
+        color: #ff4444;
+        font-family: 'Poppins', sans-serif;
+        line-height: 1;
+        display: inline-block;
+        text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5),
+                     0 0 30px rgba(255, 68, 68, 0.5);
+    }
+    
+    .error-title {
+        font-size: 2.5rem;
+        color: #ffffff;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .error-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: #ff4444;
+    }
+    
+    .error-message {
+        font-size: 1.2rem;
+        color: #b0b0b0;
+        margin: 2rem auto;
+        line-height: 1.6;
+        max-width: 600px;
+    }
+    
+    .suggestions {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .suggestions h3 {
+        color: #ff9e3f;
+        margin-bottom: 1.2rem;
+        font-size: 1.3rem;
+    }
+    
+    .suggestion-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem;
+    }
+    
+    .suggestion-btn {
+        color: #d0d0d0;
+        padding: 0.6rem 1.2rem;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 30px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .suggestion-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-3px);
+        color: #ffffff;
+        text-decoration: none;
+    }
+    
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+    
+    .action-button {
+        padding: 0.9rem 1.8rem;
+        border-radius: 30px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        color: white;
+        min-width: 140px;
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .action-button.primary {
+        background: linear-gradient(135deg, #ff4444, #ff9e3f);
+        box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+    }
+    
+    .action-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: white;
+    }
+    
+    .action-button.primary:hover {
+        background: linear-gradient(135deg, #ff5555, #ffae4f);
+        box-shadow: 0 8px 20px rgba(255, 68, 68, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+        .error-content {
+            padding: 2rem 1.2rem;
+        }
+        
+        .error-code {
+            font-size: 5rem;
+        }
+        
+        .error-title {
+            font-size: 1.8rem;
+        }
+        
+        .error-message {
+            font-size: 1rem;
+            margin: 1.5rem auto;
+        }
+        
+        .suggestions {
+            padding: 1.2rem 0.8rem;
+        }
+        
+        .suggestion-btn {
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+        
+        .action-button {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .error-page-container {
+            padding: 1.5rem 0.8rem;
+        }
+        
+        .error-code {
+            font-size: 4rem;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %} 

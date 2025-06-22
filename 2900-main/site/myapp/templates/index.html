@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+    <main class="main-content">
+        <section class="search-section">
+            <h1>Search for a movie or tv show</h1>
+            <p>Find where to watch your favorite content</p>
+            <form method="GET" action="{% url 'search' %}" id="search-form">
+                <input type="text" 
+                       name="query" 
+                       value="{{ query|default:'' }}"
+                       placeholder="Search for movies or TV shows..." 
+                       required>
+                <input type="hidden" name="region" id="search-region" value="NO">
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        {% if search_results %}
+        <section class="search-results">
+            {% for result in search_results %}
+            <div class="movie-card">
+                <div class="movie-poster">
+                    {% if result.poster_url %}
+                        <img src="{{ result.poster_url }}" 
+                             alt="{{ result.title }} poster" 
+                             loading="lazy">
+                    {% else %}
+                        <div class="no-poster">No poster available</div>
+                    {% endif %}
+                </div>
+                <div class="movie-info">
+                    <h2>
+                        <a href="{% url 'content_detail' media_type=result.media_type media_id=result.id %}" 
+                           class="content-link">
+                            {{ result.title }}
+                        </a>
+                    </h2>
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'add_to_watchlist' media_type=result.media_type media_id=result.id %}" 
+                              method="post" 
+                              class="watchlist-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="title" value="{{ result.title }}">
+                            <input type="hidden" name="poster_path" value="{{ result.poster_url }}">
+                            <button type="submit" class="watchlist-button {% if result.id in watchlist_ids %}in-watchlist{% endif %}">
+                                {% if result.id in watchlist_ids %}
+                                    ★ In Watchlist
+                                {% else %}
+                                    ☆ Add to Watchlist
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% endif %}
+                    <div class="meta-info">
+                        <span class="media-type">{{ result.media_type|title }}</span>
+                        <div class="rating-info">
+                            <span class="rating">
+                                <span class="star">★</span>
+                                {{ result.rating|floatformat:1 }}
+                            </span>
+                            <span class="votes">({{ result.vote_count }} votes)</span>
+                        </div>
+                    </div>
+                    <p class="description">{{ result.overview }}</p>
+                    
+                    {% if result.streaming_providers.flatrate %}
+                    <div class="streaming-section">
+                        <h3>Stream on:</h3>
+                        <div class="provider-list">
+                            {% for provider in result.streaming_providers.flatrate %}
+                            <div class="provider" title="{{ provider.provider_name }}">
+                                <a href="{{ provider.provider_url }}" target="_blank" rel="noopener noreferrer">
+                                    <img src="https://image.tmdb.org/t/p/original{{ provider.logo_path }}" 
+                                         alt="{{ provider.provider_name }}">
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if result.streaming_providers.rent %}
+                    <div class="streaming-section">
+                        <h3>Rent on:</h3>
+                        <div class="provider-list">
+                            {% for provider in result.streaming_providers.rent %}
+                            <div class="provider" title="{{ provider.provider_name }}">
+                                <a href="{{ provider.provider_url }}" target="_blank" rel="noopener noreferrer">
+                                    <img src="https://image.tmdb.org/t/p/original{{ provider.logo_path }}" 
+                                         alt="{{ provider.provider_name }}">
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-results">
+                <p>No results found for your search.</p>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </main>
+{% endblock %}

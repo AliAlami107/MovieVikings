@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ content.title }}{% endblock %}
+
+{% block content %}
+<!-- Content Detail Template
+     Displays detailed information about a movie or TV show including:
+     - Basic information (title, rating, release date)
+     - Cast and crew information
+     - Streaming availability
+     - Watchlist functionality
+-->
+<main class="main-content">
+    <div class="content-detail">
+        <button class="close-button" onclick="window.history.back()">X</button>
+
+        <!-- Content Header Section
+             Contains the main content information:
+             - Poster image
+             - Title and basic metadata
+             - Rating information
+             - Release/air date
+             - Director/Creator
+             - Runtime/Seasons
+             - Cast information
+        -->
+        <div class="content-header">
+            <div class="poster-container">
+                {% if content.poster_url %}
+                    <img src="{{ content.poster_url }}" alt="{{ content.title }} poster" class="detail-poster">
+                {% else %}
+                    <div class="no-poster">No poster available</div>
+                {% endif %}
+            </div>
+
+            <div class="content-info">
+                <h1>{{ content.title }}</h1>
+
+                <!-- Meta Information Section
+                     Displays all metadata about the content:
+                     - Media type (Movie/TV)
+                     - Rating and vote count
+                     - Release information
+                     - Director/Creator
+                     - Runtime/Seasons
+                     - Cast list
+                -->
+                <div class="meta-info">
+                    <span class="media-type">{{ media_type|title }}</span>
+
+                    <div class="rating-info">
+                        <span class="rating">
+                            <span class="star">★</span>
+                            {{ content.rating|floatformat:1 }}
+                        </span>
+                        <span class="votes">({{ content.vote_count }} votes)</span>
+                    </div>
+
+                    {% if content.release_date %}
+                        <span class="release-date">Released: {{ content.release_date }}</span>
+                    {% elif content.first_air_date %}
+                        <span class="air-date">First aired: {{ content.first_air_date }}</span>
+                    {% endif %}
+
+                    {% if content.director %}
+                        <span class="meta-info-item">
+                            <strong>{% if media_type == 'tv' %}Creator{% else %}Director{% endif %}:</strong>
+                            <a href="{% url 'director_detail' director_name=content.director|urlencode %}">{{ content.director }}</a>
+                        </span>
+                    {% endif %}
+
+                    {% if content.runtime %}
+                        <span class="runtime">{{ content.runtime }} minutes</span>
+                    {% elif content.number_of_seasons %}
+                        <span class="seasons">{{ content.number_of_seasons }} season{{ content.number_of_seasons|pluralize }}</span>
+                    {% endif %}
+
+                    {% if content.cast %}
+                        <span class="meta-info-item">
+                            <strong>Cast:</strong>
+                            {% for actor in content.cast %}
+                                <a href="{% url 'actor_detail' actor_name=actor.name|urlencode %}">{{ actor.name }}</a>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <!-- Watchlist Integration
+                     Allows authenticated users to:
+                     - Add content to their watchlist
+                     - Remove content from watchlist
+                     - See current watchlist status
+                -->
+                {% if user.is_authenticated %}
+                    <form action="{% url 'add_to_watchlist' media_type=media_type media_id=content.id %}" method="post" class="watchlist-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="title" value="{{ content.title }}">
+                        <input type="hidden" name="poster_path" value="{{ content.poster_url }}">
+                        <button type="submit" class="watchlist-button {% if is_in_watchlist %}in-watchlist{% endif %}">
+                            {% if is_in_watchlist %}
+                                ★ In Watchlist
+                            {% else %}
+                                ☆ Add to Watchlist
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+
+                <!-- Content Overview
+                     Displays the main description/synopsis
+                     of the movie or TV show
+                -->
+                <div class="overview">
+                    <h2>Overview</h2>
+                    <p>{{ content.overview }}</p>
+                </div>
+
+                <!-- Genre Tags
+                     Displays all genres associated with
+                     the content as clickable tags
+                -->
+                <div class="genres">
+                    {% for genre in content.genres %}
+                        <span class="genre-tag">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+
+                <!-- Streaming Providers Section
+                     Displays available streaming options:
+                     - Free streaming services (flatrate)
+                     - Rental options
+                     - Region-specific availability
+                -->
+                {% if content.streaming_providers.flatrate or content.streaming_providers.rent %}
+                    <div class="streaming-options">
+                        {% if content.streaming_providers.flatrate %}
+                            <div class="streaming-section">
+                                <h3>Stream on:</h3>
+                                <div class="provider-list">
+                                    {% for provider in content.streaming_providers.flatrate %}
+                                        <div class="provider" title="{{ provider.provider_name }}">
+                                            <a href="{{ provider.provider_url }}" target="_blank" rel="noopener noreferrer">
+                                                <img src="https://image.tmdb.org/t/p/original{{ provider.logo_path }}" alt="{{ provider.provider_name }}">
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if content.streaming_providers.rent %}
+                            <div class="streaming-section">
+                                <h3>Rent on:</h3>
+                                <div class="provider-list">
+                                    {% for provider in content.streaming_providers.rent %}
+                                        <div class="provider" title="{{ provider.provider_name }}">
+                                            <a href="{{ provider.provider_url }}" target="_blank" rel="noopener noreferrer">
+                                                <img src="https://image.tmdb.org/t/p/original{{ provider.logo_path }}" alt="{{ provider.provider_name }}">
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p class="no-streaming">No streaming information available for your region.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

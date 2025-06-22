@@ -1,0 +1,47 @@
+{# templates/includes/movie_card.html #}
+{% load static %} {# Optional, but good practice if needed #}
+
+<div class="movie-card"> {# Add your existing card styling class here #}
+    {# Poster #}
+    <div class="movie-poster"> {# Add your existing poster styling class here #}
+        <a href="{% url 'content_detail' media_type=item.media_type media_id=item.id %}">
+        {% if item.poster_url %}
+            <img src="{{ item.poster_url }}" alt="{{ item.title }} poster" loading="lazy">
+        {% else %}
+            <div class="no-poster"><span>No Poster</span></div> {# Style this class #}
+        {% endif %}
+        </a>
+    </div>
+    {# Info #}
+    <div class="movie-info"> {# Add your existing info styling class here #}
+        <h2 class="movie-title"> {# Add your existing title styling class here #}
+            <a href="{% url 'content_detail' media_type=item.media_type media_id=item.id %}" class="content-link">{{ item.title }}</a>
+        </h2>
+        {% if user.is_authenticated %} {# Assumes user is available in context #}
+            <form action="{% url 'add_to_watchlist' media_type=item.media_type media_id=item.id %}" method="post" class="watchlist-form">
+                {% csrf_token %}
+                <input type="hidden" name="title" value="{{ item.title }}">
+                <input type="hidden" name="poster_path" value="{{ item.poster_url }}">
+                <button type="submit" class="watchlist-button {% if item.id|stringformat:'s' in watchlist_ids %}in-watchlist{% endif %}" aria-label="{% if item.id|stringformat:'s' in watchlist_ids %}Remove from Watchlist{% else %}Add to Watchlist{% endif %}">
+                    {% if item.id|stringformat:'s' in watchlist_ids %}★ Remove from Watchlist{% else %}☆ Add to Watchlist{% endif %}
+                </button>
+            </form>
+        {% endif %}
+        <div class="meta-info"> {# Add your existing meta styling class here #}
+            <div class="rating-info"> {# Style as needed #}
+                <span class="rating">★ {{ item.rating|floatformat:1 }}</span>
+                <span class="votes">({{ item.vote_count }} votes)</span>
+            </div>
+            {% if item.release_date %}
+            <span class="release-year">({{ item.release_date.year }})</span>
+            {% endif %}
+        </div>
+        <p class="description">{{ item.overview|truncatewords:25 }}</p> {# Add your existing description styling class here #}
+
+        {# --- Streaming Options Display --- #}
+        <div class="streaming-options"> {# Add your existing streaming options styling class here #}
+            {# Include the provider display, passing necessary context #}
+            {% include 'includes/provider_display.html' with providers=item.streaming_providers region=selected_region %}
+        </div>
+    </div>
+</div>

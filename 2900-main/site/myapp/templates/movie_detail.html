@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static socialaccount %}
+
+{% load static %}
+{% block content %}
+
+
+<!-- movie_detail.html -->
+<div class="movie-actions">
+    {% if user.is_authenticated %}
+        <form action="{% url 'add_to_watchlist' media_type='movie' media_id=movie.id %}" 
+              method="post" 
+              class="watchlist-form">
+            {% csrf_token %}
+            <input type="hidden" name="title" value="{{ movie.title }}">
+            <input type="hidden" name="poster_path" value="{{ movie.poster_path }}">
+            <button type="submit" class="watchlist-button">
+                {% if is_in_watchlist %}
+                    ★ Remove from Watchlist
+                {% else %}
+                    ☆ Add to Watchlist
+                {% endif %}
+            </button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %} 

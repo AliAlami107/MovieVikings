@@ -1,0 +1,14 @@
+Django>=5.0.0  # Django framework
+requests==2.32.0  # For making HTTP requests to TMDB API
+python-dotenv>=1.0.0  # For handling environment variables
+urllib3>=2.0.0  # Required by requests
+certifi>=2024.2.0  # Required for secure requests
+django-allauth>=65.4.1 #authentication
+pyjwt>=2.10.1 #authentication
+cryptography==44.0.1
+
+# Performance optimization packages
+django-debug-toolbar>=4.3.0  # Development debugging and profiling
+pillow>=10.2.0  # Image processing
+whitenoise>=6.6.0  # Static file serving
+django-compressor>=4.4  # CSS/JS compression

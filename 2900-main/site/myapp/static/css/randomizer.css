@@ -1,0 +1,721 @@
+/* 
+ * Randomizer Stylesheet
+ * Contains styling for the movie/TV show randomizer feature
+ * Including wheel animation, results display, and interactive elements
+ */
+
+/* Main Container Layout */
+.randomizer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: calc(100vh - 120px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+/* Left Section - Wheel Component */
+.wheel-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Wheel Section Typography */
+.wheel-section h1 {
+    font-family: var(--font-primary);
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.02em;
+}
+
+.wheel-section p {
+    font-family: var(--font-secondary);
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 2rem;
+    letter-spacing: 0.01em;
+}
+
+.wheel-outer-container {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    padding: 1rem;
+}
+
+/* Right Section - Results Display */
+.results-section {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    height: 100%;
+}
+
+/* Results Container Animation and Layout */
+.result-container {
+    display: none;
+    min-height: 200px;
+    height: auto;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 15px;
+    padding: 2rem;
+}
+
+.result-container.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.result-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.result-poster {
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.result-info {
+    text-align: center;
+    width: 100%;
+}
+
+.result-info h3 {
+    font-family: var(--font-primary);
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: white;
+    letter-spacing: -0.02em;
+}
+
+/* Add styles for clickable content link */
+.result-info h3 .content-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.result-info h3 .content-link:hover {
+    color: #ff4444;
+}
+
+.media-type {
+    font-family: var(--font-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+    display: inline-block;
+    background: #ff4444;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+}
+
+.overview {
+    font-family: var(--font-secondary);
+    color: #ccc;
+    line-height: 1.7;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    letter-spacing: 0.01em;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 1200px) {
+    .randomizer-container {
+        grid-template-columns: 1fr;
+    }
+
+    .wheel-section, .results-section {
+        position: relative;
+        top: 0;
+        height: auto;
+    }
+
+    .wheel-section {
+        margin-bottom: 2rem;
+    }
+
+    .result-card {
+        grid-template-columns: 1fr;
+    }
+
+    .result-poster {
+        width: 200px;
+        margin: 0 auto;
+    }
+
+    .result-info {
+        text-align: center;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Media type selector */
+.media-type-selector {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.media-button {
+    background: rgba(40, 40, 40, 0.8);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 30px;
+    font-family: var(--font-secondary);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 0.5rem;
+}
+
+.media-button:hover {
+    background: rgba(60, 60, 60, 0.8);
+    transform: translateY(-2px);
+}
+
+.media-button.active {
+    background: #ff4444;
+    box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);
+}
+
+/* Wheel Component Styling */
+.wheel-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    margin-bottom: 80px;
+}
+
+/* Wheel Animation and Effects */
+.wheel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5),
+                inset 0 0 60px rgba(0, 0, 0, 0.3);
+    transition: transform 4s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+    background: #2c3e50;
+}
+
+.wheel-segment {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    transform-origin: 0% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.segment-emoji {
+    position: absolute;
+    left: 60%;
+    top: 30%;
+    transform: translate(-50%, -50%) rotate(90deg);
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-out;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+/* Wheel glow effect */
+.wheel::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 68, 68, 0.2) 0%,
+        transparent 70%
+    );
+    pointer-events: none;
+}
+
+/* Spin animation enhancement */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(90deg) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(90deg) scale(1);
+    }
+}
+
+/* Replace wheel-center with spin-button-center */
+.spin-button-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.5),
+                inset 0 0 10px rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+    outline-offset: 2px;
+}
+
+.spin-button-center:hover:not(:disabled) {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 25px rgba(255, 68, 68, 0.7),
+                inset 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.spin-button-center:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+.spin-button-center.spinning {
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        outline-color: rgba(255, 255, 255, 0.3);
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1.08);
+        box-shadow: 0 0 30px rgba(255, 68, 68, 0.7);
+        outline-color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+/* Responsive adjustments for emojis */
+@media (max-width: 768px) {
+    .segment-emoji {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .segment-emoji {
+        font-size: 1.2rem;
+    }
+}
+
+/* Spin button (legacy bottom button - keeping for compatibility) */
+.spin-button {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    font-family: var(--font-primary);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 2rem;
+}
+
+.spin-button:hover:not(:disabled) {
+    background: #ff6666;
+    transform: translateY(-2px);
+}
+
+.spin-button:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+/* Add responsive design */
+@media (max-width: 480px) {
+    .wheel-container {
+        width: 300px;
+        height: 300px;
+    }
+
+    .wheel-segment img {
+        max-width: 50px;
+        max-height: 50px;
+    }
+}
+
+/* Add these at the end of your existing CSS */
+
+.sparkles {
+    display: none;
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    animation: confetti-fall 4s linear forwards;
+    z-index: 1000;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.result-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.result-image::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: scale(0) rotate(45deg);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(0) rotate(45deg);
+        opacity: 0.5;
+    }
+    81% {
+        transform: scale(4) rotate(45deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(50) rotate(45deg);
+        opacity: 0;
+    }
+}
+
+/* Add these styles */
+.region-selector {
+    margin-bottom: 1.5rem;
+}
+
+.region-select {
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.region-select:hover {
+    border-color: #ff4444;
+}
+
+.meta-info {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.rating {
+    color: #ffd700;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.votes {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.streaming-providers {
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+}
+
+.streaming-section {
+    margin-bottom: 1.5rem;
+}
+
+.streaming-section h4 {
+    color: #ccc;
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.provider-list {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.provider {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.provider:hover {
+    transform: scale(1.1);
+}
+
+.provider img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-streaming {
+    color: #888;
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+/* Improve streaming provider layout */
+.streaming-providers {
+    margin-top: 1.5rem;
+}
+
+.provider-list {
+    justify-content: flex-start;
+}
+
+/* Add smooth scrolling */
+.results-section {
+    scroll-behavior: smooth;
+}
+
+/* Genre selector styles */
+.genre-selector {
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 500px;
+}
+
+.genre-title {
+    font-family: var(--font-secondary);
+    color: #ccc;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    text-align: center;
+}
+
+.genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border-radius: 10px;
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    scrollbar-width: thin;
+    scrollbar-color: #ff4444 #2c3e50;
+}
+
+.genre-tags::-webkit-scrollbar {
+    width: 6px;
+}
+
+.genre-tags::-webkit-scrollbar-track {
+    background: #2c3e50;
+    border-radius: 3px;
+}
+
+.genre-tags::-webkit-scrollbar-thumb {
+    background-color: #ff4444;
+    border-radius: 3px;
+}
+
+.genre-tag {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba(40, 40, 40, 0.8);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    user-select: none;
+}
+
+.genre-tag:hover {
+    background: rgba(60, 60, 60, 0.8);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.genre-tag.active {
+    background: #ff4444;
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.5);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Genres display */
+.genres {
+    margin: 0.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.genres-label {
+    font-weight: bold;
+    color: #ccc;
+}
+
+.genres-list {
+    color: #ff4444;
+}
+
+/* Mobile responsiveness for genres */
+@media (max-width: 768px) {
+    .genre-selector {
+        max-width: 100%;
+    }
+    
+    .genre-tags {
+        max-height: 120px;
+        padding: 0.4rem;
+    }
+    
+    .genre-tag {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .genre-tags {
+        gap: 0.4rem;
+    }
+    
+    .genre-tag {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Enhance wheel pointer */
+.wheel-pointer {
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 30px solid #ff4444;
+    filter: drop-shadow(2px 0 4px rgba(0, 0, 0, 0.3));
+    z-index: 2;
+}
+
+.wheel-pointer::after {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -30px;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 30px solid rgba(255, 255, 255, 0.2);
+    filter: blur(3px);
+}
+
+@media (max-width: 768px) {
+    .spin-button-center {
+        width: 70px;
+        height: 70px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .spin-button-center {
+        width: 60px;
+        height: 60px;
+        font-size: 0.9rem;
+    }
+} 

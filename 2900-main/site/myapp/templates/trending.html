@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Trending Movies & TV Shows{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    {% if error %}
+        <div class="error-message">{{ error }}</div>
+    {% else %}
+        <section class="content-section">
+            <h1>Trending Movies This Week</h1>
+            <div class="content-grid">
+                {% for movie in movies %}
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        {% if movie.poster_url %}
+                            <img src="{{ movie.poster_url }}" alt="{{ movie.title }} poster">
+                        {% else %}
+                            <div class="no-poster">No poster available</div>
+                        {% endif %}
+                    </div>
+                    <div class="movie-info">
+                        <h2>
+                            <a href="{% url 'content_detail' media_type=movie.media_type media_id=movie.id %}" 
+                               class="content-link">
+                                {{ movie.title }}
+                            </a>
+                        </h2>
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'add_to_watchlist' media_type=movie.media_type media_id=movie.id %}" 
+                                  method="post" 
+                                  class="watchlist-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="title" value="{{ movie.title }}">
+                                <input type="hidden" name="poster_path" value="{{ movie.poster_url }}">
+                                <button type="submit" class="watchlist-button {% if movie.id in watchlist_ids %}in-watchlist{% endif %}">
+                                    {% if movie.id in watchlist_ids %}
+                                        ★ In Watchlist
+                                    {% else %}
+                                        ☆ Add to Watchlist
+                                    {% endif %}
+                                </button>
+                            </form>
+                        {% endif %}
+                        <div class="meta-info">
+                            <div class="rating-info">
+                                <span class="rating">
+                                    <span class="star">★</span>
+                                    {{ movie.rating|floatformat:1 }}
+                                </span>
+                                <span class="votes">({{ movie.vote_count }} votes)</span>
+                            </div>
+                        </div>
+                        <p class="description">{{ movie.overview }}</p>
+                        
+                        {% if movie.streaming_providers.flatrate %}
+                        <div class="streaming-section">
+                            <h3>Stream on:</h3>
+                            <div class="provider-list">
+                                {% for provider in movie.streaming_providers.flatrate %}
+                                <div class="provider" title="{{ provider.provider_name }}">
+                                    <a href="{{ provider.provider_url }}" target="_blank" rel="noopener noreferrer">
+                                        <img src="https://image.tmdb.org/t/p/original{{ provider.logo_path }}" 
+                                             alt="{{ provider.provider_name }}">
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h1>Trending TV Shows This Week</h1>
+            <div class="content-grid">
+                {% for show in tv_shows %}
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        {% if show.poster_url %}
+                            <img src="{{ show.poster_url }}" alt="{{ show.title }} poster">
+                        {% else %}
+                            <div class="no-poster">No poster available</div>
+                        {% endif %}
+                    </div>
+                    <div class="movie-info">
+                        <h2>
+                            <a href="{% url 'content_detail' media_type=show.media_type media_id=show.id %}" 
+                               class="content-link">
+                                {{ show.title }}
+                            </a>
+                        </h2>
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'add_to_watchlist' media_type=show.media_type media_id=show.id %}" 
+                                  method="post" 
+                                  class="watchlist-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="title" value="{{ show.title }}">
+                                <input type="hidden" name="poster_path" value="{{ show.poster_url }}">
+                                <button type="submit" class="watchlist-button {% if show.id in watchlist_ids %}in-watchlist{% endif %}">
+                                    {% if show.id in watchlist_ids %}
+                                        ★ In Watchlist
+                                    {% else %}
+                                        ☆ Add to Watchlist
+                                    {% endif %}
+                                </button>
+                            </form>
+                        {% endif %}
+                        <div class="meta-info">
+                            <div class="rating-info">
+                                <span class="rating">
+                                    <span class="star">★</span>
+                                    {{ show.rating|floatformat:1 }}
+                                </span>
+                                <span class="votes">({{ show.vote_count }} votes)</span>
+                            </div>
+                        </div>
+                        <p class="description">{{ show.overview }}</p>
+                        
+                        {% if show.streaming_providers.flatrate %}
+                        <div class="streaming-section">
+                            <h3>Stream on:</h3>
+                            <div class="provider-list">
+                                {% for provider in show.streaming_providers.flatrate %}
+                                <div class="provider" title="{{ provider.provider_name }}">
+                                    <a href="{{ provider.provider_url }}" target="_blank" rel="noopener noreferrer">
+                                        <img src="https://image.tmdb.org/t/p/original{{ provider.logo_path }}" 
+                                             alt="{{ provider.provider_name }}">
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+</main>
+{% endblock %} 

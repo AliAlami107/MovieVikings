@@ -1,0 +1,297 @@
+/* === General Filter Controls Styling (KEEP THIS AS IS or similar) === */
+/* 
+ * Filters Stylesheet
+ * Contains all styling for the movie filtering system
+ * Including provider filters, filter controls, and responsive design
+ */
+
+/* Main Filter Controls Container */
+.filter-controls {
+    background-color: rgba(233, 236, 239, 0.7); /* White background for the main filter box - KEEP THIS */
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* Filter Form Layout */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    align-items: flex-start;
+}
+
+/* Individual Filter Group Styling */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* === Provider Filter Group Specifics === */
+.provider-filter-group {
+    flex: 1 1 300px;
+    min-width: 2px;
+}
+
+.provider-filter-group > label { /* The main "Providers:" label */
+    margin-bottom: 12px;
+    display: block;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #212529;
+}
+
+/* Provider Logo Grid Layout */
+.provider-logo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 5px;
+    padding: 0px; /* Padding inside the grid area */
+    padding-bottom: 9px;
+    
+    /* --- MAKE THIS TRANSPARENT --- */
+    background-color: transparent; /* So it takes on .filter-controls background */
+    border: 1px solid #ced4da;    /* Or border: none; if you don't want a border around the grid */
+    /* If border is none, you might not need padding here, or adjust it */
+
+    border-radius: 8px;
+    max-height: 160px;
+    overflow-y: auto;
+
+    /* Scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #adb5bd #e9ecef; /* Adjusted track color for potentially white bg */
+}
+
+/* Custom Scrollbar Styling */
+.provider-logo-grid::-webkit-scrollbar {
+    width: 8px;
+}
+.provider-logo-grid::-webkit-scrollbar-track {
+    /* If grid is transparent and .filter-controls is white, this could be a light gray or transparent */
+    background: rgba(233, 236, 239, 0.5); /* Light semi-transparent track */
+    border-radius: 10px;
+}
+.provider-logo-grid::-webkit-scrollbar-thumb {
+    background-color: #adb5bd;
+    border-radius: 10px;
+    border: 2px solid transparent; /* Transparent border for thumb */
+}
+.provider-logo-grid::-webkit-scrollbar-thumb:hover {
+    background-color: #868e96;
+}
+
+.no-providers-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #495057;
+    font-size: 0.9rem;
+    padding: 8px 6px;
+    /* background-color: #f8f9fa; */ /* REMOVE or make transparent if grid is transparent */
+    background-color: transparent;
+    border-radius: 6px;
+}
+
+/* Provider Logo Label Styling */
+.provider-logo-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 3px;
+    border: 2px solid transparent; /* Default border - transparent */
+    border-radius: 5px;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    
+    /* --- MAKE THIS TRANSPARENT --- */
+    background-color: transparent; /* So individual labels are transparent */
+
+    text-align: center;
+    aspect-ratio: 1 / 1;
+}
+
+.provider-logo-label:hover {
+    /* Subtle feedback without solid background */
+    background-color: rgba(0, 0, 0, 0.03); /* Very subtle dark overlay for hover */
+    border-color: #adb5bd; /* Optional: border feedback */
+    transform: translateY(-1px);
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.05); */ /* Shadow might be too much if aiming for full transparency */
+}
+
+.provider-logo-label.is-selected {
+    background-color: rgba(13, 110, 253, 0.1); /* Subtle, semi-transparent primary color for selected */
+    border-color: #0d6efd; /* Keep selected border */
+    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15); /* Softer glow */
+}
+.provider-logo-label.is-selected:hover {
+    transform: none;
+    background-color: rgba(13, 110, 253, 0.15); /* Slightly darker on hover when selected */
+}
+
+/* --- Visually Hide the Actual Checkbox --- */
+.hidden-checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* --- Provider Logo Image Styling --- */
+.provider-logo-filter {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    /* --- IMPORTANT FOR IMAGE TRANSPARENCY --- */
+    background-color: transparent; /* Remove if you had a forced white bg here */
+}
+
+/* Fallback for when no logo exists */
+.provider-logo-fallback {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width: 100%;
+     height: 100%;
+     /* --- MAKE THIS TRANSPARENT or semi-transparent if desired --- */
+     background-color: rgba(233, 236, 239, 0.7); /* Semi-transparent light gray */
+     color: #495057;
+     font-size: 0.6rem;
+     text-align: center;
+     line-height: 1.2;
+     padding: 3px;
+     border-radius: 4px;
+     overflow: hidden;
+     word-break: break-all;
+     font-weight: 500;
+     box-sizing: border-box;
+ }
+
+/* Filter Button Styling */
+.filter-buttons {
+    align-self: flex-start; /* Align with top of other filter groups */
+    /* margin-bottom: 0; */ /* Already handled by form gap */
+    display: flex;
+    gap: 6px; /* Slightly more gap */
+    flex-direction: column;
+    min-width: 120px; /* Adjusted min-width */
+    padding-top: 28px; /* NEW: To align buttons visually if provider label is present */
+}
+
+/* Apply and Clear Button Styling */
+.button-apply,
+.button-clear {
+    padding: 4px 6px; /* Consistent padding */
+    border: none;
+    border-radius: 6px; /* Consistent rounding */
+    text-decoration: none;
+    font-size: 0.9rem; /* Standardized size */
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    line-height: normal;
+    white-space: nowrap;
+    text-align: center;
+    width: 100%;
+}
+.button-apply:hover, .button-clear:hover {
+     box-shadow: 0 3px 7px rgba(0,0,0,0.1); /* Slightly more pronounced hover shadow */
+     transform: translateY(-1px); /* Lift effect */
+}
+.button-apply:active, .button-clear:active {
+    transform: translateY(0px); /* Pressed effect */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.button-apply {
+    background-color: #0d6efd;
+    color: white;
+}
+.button-apply:hover {
+    background-color: #0b5ed7;
+}
+
+.button-clear {
+    background-color: #6c757d;
+    color: white;
+}
+.button-clear:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* Mobile-specific filter adjustments */
+    .filter-controls {
+        padding: 10px 15px; /* Smaller padding on mobile */
+    }
+    .filter-form {
+        gap: 10px; /* Smaller gap */
+    }
+    .provider-filter-group > label {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+     .provider-logo-grid {
+        max-height: 80px; /* Even smaller height */
+        grid-template-columns: repeat(auto-fill, minmax(36px, 1fr)); /* Min column for ~28px logos */
+        gap: 4px;
+        padding: 6px;
+    }
+    /* .provider-logo-filter, .provider-logo-fallback will adapt via label size or explicit set above */
+
+    .filter-buttons {
+        flex-direction: row;
+        width: 100%;
+        margin-left: 0;
+        padding-top: 8px; /* Adjust for row layout */
+        gap: 8px;
+    }
+    .button-apply, .button-clear {
+        flex-grow: 1;
+        font-size: 0.7rem; /* Smaller font on mobile buttons */
+        padding: 5px 8px; /* Smaller padding on mobile buttons */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Small mobile-specific adjustments */
+    .filter-controls {
+        padding: 8px 12px;
+    }
+    .provider-filter-group {
+        min-width: 150px; /* Allow it to get quite small */
+    }
+    .provider-filter-group > label {
+        font-size: 0.8rem;
+    }
+     .provider-logo-grid {
+         grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); /* Min column for ~26px logos */
+         gap: 3px;
+         padding: 5px;
+         max-height: 70px;
+     }
+     /* Explicitly set image size for very small screens if needed */
+     .provider-logo-filter, .provider-logo-fallback {
+         width: 15px;
+         height: 15px;
+     }
+
+     .filter-buttons {
+        flex-direction: column; /* Stack buttons again */
+        padding-top: 15px; /* Give some space from provider title */
+     }
+     .button-apply, .button-clear {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
+}

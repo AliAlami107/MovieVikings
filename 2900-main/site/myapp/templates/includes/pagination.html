@@ -1,0 +1,47 @@
+{# templates/includes/pagination.html #}
+{% if page_obj.has_other_pages %}
+<nav aria-label="Page navigation" class="pagination-nav"> {# Add class for styling #}
+    <ul class="pagination"> {# Add class for styling #}
+        {# Previous Button #}
+        {% if page_obj.has_previous %}
+            <li class="page-item"> {# Style page-item #}
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query_params %}&{{ query_params|safe }}{% endif %}" aria-label="Previous"> {# Style page-link #}
+                    <span aria-hidden="true">«</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"> {# Style disabled #}
+                <span class="page-link" aria-hidden="true">«</span>
+            </li>
+        {% endif %}
+
+        {# Page Numbers #}
+        {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="page-item active" aria-current="page"><span>{{ i }}</span></li> {# Style active #}
+            {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if query_params %}&{{ query_params|safe }}{% endif %}">{{ i }}</a></li>
+            {% elif i == 1 or i == page_obj.paginator.num_pages %}
+                {% if i == 1 and page_obj.number > 4 %} <li class="page-item disabled"><span>...</span></li> {% endif %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if query_params %}&{{ query_params|safe }}{% endif %}">{{ i }}</a></li>
+                {% if i == page_obj.paginator.num_pages and page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <li class="page-item disabled"><span>...</span></li> {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {# Next Button #}
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query_params %}&{{ query_params|safe }}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true">»</span>
+                     <span class="sr-only">Next</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">»</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}

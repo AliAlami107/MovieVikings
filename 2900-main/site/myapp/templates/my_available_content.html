@@ -1,0 +1,53 @@
+<!-- THIS HTML IS NOT IN USE, FOR LATER DEVELOPMENT-->
+
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="info-container">
+        <h1>My Available Content</h1>
+        <div class="privacy-content">
+            <section class="privacy-section">
+                <h2>Your Streaming Services</h2>
+                    <ul>
+                        {% for service in user_services %}
+                            <li>{{ service.name }}</li>
+                        {% empty %}
+                            <li>You have not selected any streaming services.</li>
+                        {% endfor %}
+                    </ul>
+
+            </section>
+
+            <section class="privacy-section">
+                <h2>Movies Available</h2>
+                    <ul>
+                        {% for movie in movies %}
+                            <li>{{ movie.title }}</li>
+                        {% empty %}
+                            <li>No movies available based on your streaming services.</li>
+                        {% endfor %}
+                    </ul>
+                
+            </section>
+
+            <section class="privacy-section">
+                <h2>TV Shows Available</h2>
+                    <ul>
+                        {% for show in shows %}
+                            <li>{{ show.title }}</li>
+                        {% empty %}
+                            <li>No TV shows available based on your streaming services.</li>
+                        {% endfor %}
+                    </ul>
+            </section>
+
+            
+        </div>
+    </div>
+</main>
+{% endblock %} 

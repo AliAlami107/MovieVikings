@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/director.css' %}">
+{% endblock %}
+
+{% block title %}{{ actor }}{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <h1 class="director-title">Titles with {{ actor }}</h1>
+
+    {% if profile_path %}
+        <div class="person-profile-pic">
+            <img src="https://image.tmdb.org/t/p/w300{{ profile_path }}" alt="{{ actor }}">
+        </div>
+    {% endif %}
+
+    {% if movies %}
+        <h2>Movies</h2>
+        <div class="movie-grid">
+            {% for movie in movies %}
+                <a href="{% url 'content_detail' media_type='movie' media_id=movie.id %}" class="movie-card">
+                    <div class="poster-container">
+                        {% if movie.poster_path %}
+                            <img src="https://image.tmdb.org/t/p/w300{{ movie.poster_path }}" alt="{{ movie.title }}">
+                        {% else %}
+                            <div class="no-poster">No Image</div>
+                        {% endif %}
+                    </div>
+                    <h3>{{ movie.title }}</h3>
+                    <p>{{ movie.release_date|default:"N/A"|slice:":4" }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if shows %}
+        <h2>TV Shows</h2>
+        <div class="movie-grid">
+            {% for show in shows %}
+                <a href="{% url 'content_detail' media_type='tv' media_id=show.id %}" class="movie-card">
+                    <div class="poster-container">
+                        {% if show.poster_path %}
+                            <img src="https://image.tmdb.org/t/p/w300{{ show.poster_path }}" alt="{{ show.name }}">
+                        {% else %}
+                            <div class="no-poster">No Image</div>
+                        {% endif %}
+                    </div>
+                    <h3>{{ show.name }}</h3>
+                    <p>{{ show.first_air_date|default:"N/A"|slice:":4" }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

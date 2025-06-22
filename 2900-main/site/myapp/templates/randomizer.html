@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Movie Randomizer{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/randomizer.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="randomizer-container">
+        <!-- Left side - Wheel -->
+        <div class="wheel-section">
+            <h1>Spin the Wheel!</h1>
+            <p>Let us help you decide what to watch</p>
+            
+            <div class="region-selector">
+                <select id="region-select" class="region-select">
+                    <option value="NO">Norway</option>
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="DE">Germany</option>
+                </select>
+            </div>
+            
+            <div class="genre-selector">
+                <div class="genre-title">Select Genres</div>
+                <div id="genre-tags" class="genre-tags">
+                    <div class="genre-tag active" data-id="all">All Genres</div>
+                    <!-- Genres will be populated dynamically via JavaScript -->
+                </div>
+            </div>
+            
+            <div class="media-type-selector">
+                <button class="media-button active" data-type="all">All Content</button>
+                <button class="media-button" data-type="movie">Movies Only</button>
+                <button class="media-button" data-type="tv">TV Shows Only</button>
+            </div>
+            
+            <div class="wheel-outer-container">
+                <div class="wheel-container">
+                    <div class="wheel" id="wheel"></div>
+                    <button id="spin-button" class="spin-button-center">SPIN</button>
+                    <div class="wheel-pointer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side - Results -->
+        <div class="results-section">
+            <div id="result" class="result-container">
+                <div id="selected-content" class="selected-content"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/randomizer.js' %}"></script>
+{% endblock %}
